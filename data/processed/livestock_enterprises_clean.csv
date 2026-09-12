@@ -1,0 +1,15 @@
+sno.,district,number_of_non_households_enterprises_and_institutions_having_cattle,number_of_non_households_enterprises_and_institutions_having_buffaloes,number_of_non_households_enterprises_and_institutions_having_goats,number_of_non_households_enterprises_and_institutions_having_sheep,number_of_non_households_enterprises_and_institutions_having_pigs,number_of_non_households_enterprises_and_institutions_having_poultry_farm_&_hatcheries,source,data_level,last_updated
+1,Alappuzha,123,8,19,0,65,12450,Kerala Livestock Enterprises Data,district,2026-09-12
+2,Ernakulam,248,51,32,1,53,425,Kerala Livestock Enterprises Data,district,2026-09-12
+3,Idukki,114,9,12,0,33,196,Kerala Livestock Enterprises Data,district,2026-09-12
+4,Kannur,91,6,8,0,15,2079,Kerala Livestock Enterprises Data,district,2026-09-12
+5,Kasaragod,18,5,8,0,9,105,Kerala Livestock Enterprises Data,district,2026-09-12
+6,Kollam,55,5,14,0,4,85,Kerala Livestock Enterprises Data,district,2026-09-12
+7,Kottayam,179,23,11,0,37,150,Kerala Livestock Enterprises Data,district,2026-09-12
+8,Kozhikode,43,6,3,0,3,28,Kerala Livestock Enterprises Data,district,2026-09-12
+9,Malappuram,13,0,1,0,1,61,Kerala Livestock Enterprises Data,district,2026-09-12
+10,Palakkad,57,21,10,0,10,234,Kerala Livestock Enterprises Data,district,2026-09-12
+11,Pathanamthitta,19,5,7,1,3,47,Kerala Livestock Enterprises Data,district,2026-09-12
+12,Thiruvananthapuram,109,8,19,1,43,256,Kerala Livestock Enterprises Data,district,2026-09-12
+13,Thrissur,311,47,43,3,49,808,Kerala Livestock Enterprises Data,district,2026-09-12
+14,Wayanad,108,13,22,1,20,56,Kerala Livestock Enterprises Data,district,2026-09-12

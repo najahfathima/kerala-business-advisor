@@ -1,0 +1,12 @@
+indicator,nafis_value,unit,category,source,target_region,last_updated
+Average monthly household income,12698.0,INR/month,Income & Consumption,NABARD All India Rural Financial Inclusion Survey (NAFIS),Rural National Baseline,2026-09-13
+Average monthly consumption expenditure,11262.0,INR/month,Income & Consumption,NABARD All India Rural Financial Inclusion Survey (NAFIS),Rural National Baseline,2026-09-13
+Average annual savings,13209.0,INR/year,Savings & Investment,NABARD All India Rural Financial Inclusion Survey (NAFIS),Rural National Baseline,2026-09-13
+Average annual investment,12904.0,INR/year,Savings & Investment,NABARD All India Rural Financial Inclusion Survey (NAFIS),Rural National Baseline,2026-09-13
+Average indebtedness,47158.0,INR,Credit & Debt,NABARD All India Rural Financial Inclusion Survey (NAFIS),Rural National Baseline,2026-09-13
+Average annual borrowing,37243.0,INR/year,Credit & Debt,NABARD All India Rural Financial Inclusion Survey (NAFIS),Rural National Baseline,2026-09-13
+Institutional borrowing,32484.0,INR/year,Credit & Debt,NABARD All India Rural Financial Inclusion Survey (NAFIS),Rural National Baseline,2026-09-13
+Non-institutional borrowing,4759.0,INR/year,Credit & Debt,NABARD All India Rural Financial Inclusion Survey (NAFIS),Rural National Baseline,2026-09-13
+Households reporting savings,66.0,Percentage,Financial Behavior,NABARD All India Rural Financial Inclusion Survey (NAFIS),Rural National Baseline,2026-09-13
+Households with outstanding debt,52.0,Percentage,Financial Behavior,NABARD All India Rural Financial Inclusion Survey (NAFIS),Rural National Baseline,2026-09-13
+Agricultural households with valid KCC,44.1,Percentage,Credit & Debt,NABARD All India Rural Financial Inclusion Survey (NAFIS),Rural National Baseline,2026-09-13

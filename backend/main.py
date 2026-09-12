@@ -1,3 +1,8 @@
+import pandas as pd
+MASTER_DATA_PATH = "../data/processed/master_local_indicators.csv"
+
+master_data = pd.read_csv(MASTER_DATA_PATH)
+master_data["district"] = master_data["district"].str.strip().str.lower()
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -177,78 +182,13 @@ def scheme_eligibility(data: SchemeEligibilityInput):
 @app.post("/advisory-report")
 def advisory_report(data: AdvisoryReportInput):
 
+    district_data = master_data[
+        master_data["district"] == data.location.strip().lower()
+    ]
+
     # 1. Business opportunity
     opportunity = calculate_opportunity(
         data.competition,
         data.demand,
         data.purchasing_power
     )
-
-    # 2. Confidence
-    confidence = calculate_confidence(True)
-
-    # 3. Financial analysis
-    financial = calculate_financials(
-        data.available_capital,
-        data.project_cost,
-        data.monthly_revenue,
-        data.monthly_expenses,
-        data.interest_rate,
-        data.tenure_years
-    )
-
-    # 4. Risk analysis
-    risk = calculate_risk(
-    data.monthly_revenue,
-    data.monthly_expenses,
-    financial["estimated_emi"]
-)
-
-    # 5. What-if stress testing
-    stress_test = run_what_if(
-        data.monthly_revenue,
-        data.monthly_expenses,
-        financial["estimated_emi"]
-    )
-
-    # 6. Scheme eligibility
-    scheme = check_nsfdc_eligibility(
-        data.is_sc,
-        data.annual_family_income,
-        data.project_cost
-    )
-
-    # 7. Final decision
-    cash_after_emi = financial["remaining_cash_after_emi"]
-
-    if cash_after_emi > 10000:
-        decision = "GO"
-        reason = "Projected cash flow provides a reasonable repayment buffer."
-    elif cash_after_emi >= 0:
-        decision = "MODIFY"
-        reason = "The business may survive, but the financing structure is tight."
-    else:
-        decision = "DON'T PROCEED"
-        reason = "Projected cash flow cannot comfortably support the repayment."
-
-    return {
-        "business": {
-            "location": data.location,
-            "category": data.business_category,
-            "opportunity": opportunity,
-            "confidence": confidence
-        },
-
-        "financial": financial,
-
-        "risk": risk,
-
-        "stress_test": stress_test,
-
-        "scheme": scheme,
-
-        "recommendation": {
-            "decision": decision,
-            "reason": reason
-        }
-    }
