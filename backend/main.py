@@ -4,6 +4,7 @@ MASTER_DATA_PATH = "../data/processed/master_local_indicators.csv"
 master_data = pd.read_csv(MASTER_DATA_PATH)
 master_data["district"] = master_data["district"].str.strip().str.lower()
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from engines.financial_model import calculate_financials
@@ -15,6 +16,13 @@ from engines.scheme_engine import check_nsfdc_eligibility
 
 
 app = FastAPI(title="RuralBiz AI")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Entrepreneur(BaseModel):
@@ -54,10 +62,6 @@ class SchemeEligibilityInput(BaseModel):
 class AdvisoryReportInput(BaseModel):
     location: str
     business_category: str
-
-    competition: str
-    demand: str
-    purchasing_power: str
 
     available_capital: float
     project_cost: float
@@ -182,13 +186,106 @@ def scheme_eligibility(data: SchemeEligibilityInput):
 @app.post("/advisory-report")
 def advisory_report(data: AdvisoryReportInput):
 
-    district_data = master_data[
-        master_data["district"] == data.location.strip().lower()
-    ]
+    # Get verified local district evidence
+    from engines.local_evidence import get_local_evidence
 
-    # 1. Business opportunity
-    opportunity = calculate_opportunity(
-        data.competition,
-        data.demand,
-        data.purchasing_power
+    local_evidence = get_local_evidence(data.location)
+
+    if local_evidence is None:
+        return {
+            "status": "data_gap",
+            "location": data.location,
+            "business": data.business_category,
+            "message": "No verified district-level evidence is available for this location.",
+            "recommendation": "MODIFY"
+        }
+
+  
+     # Opportunity calculation using verified local evidence
+    opportunity = calculate_opportunity(local_evidence)
+
+    # Financial analysis
+    financial = calculate_financials(
+        data.available_capital,
+        data.project_cost,
+        data.monthly_revenue,
+        data.monthly_expenses,
+        data.interest_rate,
+        data.tenure_years
     )
+
+    # Risk analysis
+    risk = calculate_risk(
+        data.monthly_revenue,
+        data.monthly_expenses,
+        financial["estimated_emi"]
+    )
+
+    # Stress testing
+    stress_test = run_what_if(
+        data.monthly_revenue,
+        data.monthly_expenses,
+        financial["estimated_emi"]
+    )
+
+    # Scheme eligibility
+    scheme = check_nsfdc_eligibility(
+        data.is_sc,
+        data.annual_family_income,
+        data.project_cost
+    )
+
+     # Evidence confidence
+    confidence = calculate_confidence(local_evidence)
+
+        # Final decision using financial health + stress test
+    cash_after_emi = financial["remaining_cash_after_emi"]
+
+    stress_20 = stress_test["revenue_minus_20_percent"]["cash_after_emi"]
+    stress_30 = stress_test["revenue_minus_30_percent"]["cash_after_emi"]
+
+    if cash_after_emi < 0:
+        decision = "DON'T PROCEED"
+        reason = "The projected business cash flow cannot cover the EMI."
+
+    elif stress_20 < 0:
+        decision = "MODIFY"
+        reason = "The business is profitable at the projected revenue, but a 20% revenue decline makes repayment difficult."
+
+    elif stress_30 < 0:
+        decision = "MODIFY"
+        reason = "The business can withstand a 20% revenue decline, but a 30% decline creates repayment risk. Consider reducing the loan or increasing own contribution."
+
+    else:
+        decision = "GO"
+        reason = "The business covers the EMI under the projected revenue and remains sustainable even under a 30% revenue decline."
+
+    return {
+        "status": "success",
+        "location": data.location,
+        "business": data.business_category,
+
+        "local_evidence": local_evidence,
+
+        "opportunity_analysis": opportunity,
+
+        "financial_analysis": financial,
+
+        "risk_analysis": risk,
+
+        "stress_test": stress_test,
+
+        "scheme_eligibility": scheme,
+
+        "confidence": confidence,
+
+        "recommendation": {
+            "decision": decision,
+            "reason": reason
+        },
+
+        "disclaimer": (
+            "RuralBiz AI provides pre-loan business decision support. "
+            "It does not approve or reject loans."
+        )
+    }
