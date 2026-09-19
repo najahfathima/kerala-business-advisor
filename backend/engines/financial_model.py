@@ -6,18 +6,20 @@ def calculate_financials(
     interest_rate: float = 8.0,
     tenure_years: int = 7
 ):
-    # Funding gap calculation (Total project cost minus money in hand)
+    # Funding gap calculation
     loan_required = max(total_project_cost - available_capital, 0)
-    
+
     monthly_interest = interest_rate / 100 / 12
     months = tenure_years * 12
-    
+
     if loan_required > 0:
         emi = (
-            loan_required 
-            * monthly_interest 
+            loan_required
+            * monthly_interest
             * (1 + monthly_interest) ** months
-        ) / ((1 + monthly_interest) ** months - 1)
+        ) / (
+            (1 + monthly_interest) ** months - 1
+        )
     else:
         emi = 0
 
